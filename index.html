@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Loader</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #000; font-family: sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden;
+        }
+
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* The actual HTML file will load inside this frame */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none; /* Hidden until Play is clicked */
+        }
+
+        /* Overlay with Play Button */
+        #overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #1a1a1a;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 10;
+        }
+
+        #play-btn {
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        #play-btn:hover { background: #2980b9; transform: scale(1.05); }
+
+        .fs-control {
+            position: absolute;
+            bottom: 10px; right: 10px;
+            z-index: 5;
+        }
+
+        #fs-btn {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid #fff;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <div id="overlay">
+            <button id="play-btn">CLICK TO PLAY</button>
+            <p style="color: #666; font-size: 12px; margin-top: 10px;">Enables Focus & Fullscreen</p>
+        </div>
+
+        <iframe id="game-frame" src=""></iframe>
+
+        <div class="fs-control">
+            <button id="fs-btn">FULLSCREEN</button>
+        </div>
+    </div>
+
+    <script>
+        const playBtn = document.getElementById('play-btn');
+        const fsBtn = document.getElementById('fs-btn');
+        const overlay = document.getElementById('overlay');
+        const frame = document.getElementById('game-frame');
+        const container = document.getElementById('container');
+
+        // REPLACE THIS URL with the link to your internal HTML file
+        const projectUrl = "game.html"; 
+
+        playBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            frame.style.display = 'block';
+            frame.src = projectUrl;
+            
+            // Focus the frame so keyboard works instantly
+            frame.onload = () => {
+                frame.contentWindow.focus();
+            };
+        });
+
+        fsBtn.addEventListener('click', () => {
+            if (container.requestFullscreen) {
+                container.requestFullscreen();
+            } else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
+            }
+        });
+
+        // Re-focus frame if user clicks anywhere inside the container
+        container.addEventListener('click', () => {
+            if(frame.style.display === 'block') {
+                frame.contentWindow.focus();
+            }
+        });
+    </script>
+</body>
+
+</html>
